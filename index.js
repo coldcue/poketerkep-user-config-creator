@@ -11,7 +11,7 @@ var users = [];
 for (var i = 5; i < 48; i++) {
     users.push({
         userName: "poketk0" + ((i < 10) ? "0" : "") + i,
-        usedBy: null,
+        lastUsed: 0,
         isBanned: false
     });
 }
