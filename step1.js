@@ -13,12 +13,17 @@ fs.stat(emailsOutputFile, function(err, exist) {
 });
 
 // Generate email address
+console.log('Generating email addresses...');
 for(var i = 0; i < config.count; i++) {
 	guerrilla.get_email().then(function(account) {
-		fs.appendFile('emails.txt', account.email_addr + ' ' + account.sid_token + '\n',  function(error) {
+		var emailAddr = account.email_addr.split('@');
+		guerrilla.set_email(account.sid_token, emailAddr[0], 'sharklasers.com');
+
+		fs.appendFile(emailsOutputFile, emailAddr[0] + '@' + 'sharklasers.com' + ' ' + account.sid_token + '\n',  function(error) {
 		    if(error) {
 		        return console.log(error);
 		    }
 		});
 	});
 }
+console.log('Email addresses are ready!');

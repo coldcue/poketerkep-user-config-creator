@@ -16,6 +16,7 @@ if (fs.exists(usersOutputFile)) {
 }
 
 // Main part
+console.log('Registering users...');
 casper.start();
 
 casper.on('complete.error', function(err) {
@@ -87,6 +88,7 @@ function handleSignupPage(ctr) {
 
 function handleFinished(ctr) {
     this.echo('Finished ' + ctr + '.');
+    this.echo('Users are registered!');
 }
 
 // MD5 shit

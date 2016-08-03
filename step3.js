@@ -3,37 +3,63 @@ var guerrilla = require('node-guerrilla');
 var fs = require('fs');
 var util = require('util');
 var AWS = require("aws-sdk");
+var request = require('request');
 
 AWS.config.update({
     region: "eu-west-1"
 });
 
-
 var users = fs.readFileSync('users.txt').toString().split('\n');
 var emails = fs.readFileSync('emails.txt').toString().split('\n');
 
-// Activate email address
-for (var i = 0; i < emails.length; i++) {
-    var emailData = emails[i].split(' ');
+// Variables
+var linksOutputFile = 'links.txt';
 
-    if (emailData[1]) {
-        guerrilla.get_link('Pokémon Trainer Club Activation', 'string_to_find', emailData[1]).then(function(link) {
-            console.log(link);
+fs.stat(linksOutputFile, function(err, exist) {
+    if(exist) {
+        fs.unlink(linksOutputFile);
+    }
+});
+
+function step3() {
+    // Activate email address
+    console.log('Creating activation txt...');
+    var emailsActivated = 0;
+    for(var i = 0; i < emails.length; i++) {
+        var emailData = emails[i].split(' ');
+
+        if(emailData[1]) {
+            guerrilla.get_link('Pok&eacute;mon_Trainer_Club_Activation', 'Verify your email', emailData[1]).then(function(link) {
+                if(link) {
+                    fs.appendFile(linksOutputFile, link + '\r\n',  function(error) {
+                            if(error) {
+                                return console.log(error);
+                            } else {
+                                emailsActivated++;
+                                console.log('Links added:' + emailsActivated);
+                            }
+                        });
+                }
+            });
+        }
+    }
+
+    var userConfigs = [];
+
+    console.log('Uploading users...');
+    for (var i = 0; i < users.length; i++) {
+        userConfigs.push({
+            userName: users[i],
+            lastUsed: 0,
+            banned: false
         });
     }
+
+    uploadUsers(userConfigs);
 }
 
-var userConfigs = [];
-
-for (var i = 0; i < users.length; i++) {
-    userConfigs.push({
-        userName: users[i],
-        lastUsed: 0,
-        banned: false
-    });
-}
-
-uploadUsers(userConfigs);
+console.log('Waiting 10 seconds...');
+setTimeout(step3, 10000);
 
 function uploadUsers(users) {
     var docClient = new AWS.DynamoDB.DocumentClient();

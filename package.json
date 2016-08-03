@@ -22,6 +22,6 @@
     "util": "^0.10.3"
   },
   "scripts": {
-    "start": "node step1.js && casperjs step2.js && node step3.js"
+    "start": "node step1.js && casperjs step2.js && node step3.js && casperjs step4.js"
   }
 }
