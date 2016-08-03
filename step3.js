@@ -9,7 +9,9 @@ var emails = fs.readFileSync('emails.txt').toString().split('\n');
 for(var i = 0; i < emails.length; i++) {
 	var emailData = emails[i].split(' ');
 
-	guerrilla.get_link('Asd', 'Pokémon Trainer Club Activation', emailData.sid_token).then(function(link) {
-		console.log(link);
-	});
+	if(emailData[1]) {
+		guerrilla.get_link('Pokémon Trainer Club Activation', 'string_to_find', emailData[1]).then(function(link) {
+			console.log(link);
+		});
+	}
 }
