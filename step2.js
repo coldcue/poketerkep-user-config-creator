@@ -6,10 +6,14 @@ var casper = require('casper').create({
 var fs = require('fs');
 var config = require('./config.json');
 
-var prefix = 'fdfasdf_1';
+var prefix = config.prefix;
 var url_ptc = 'https://club.pokemon.com/us/pokemon-trainer-club/sign-up/';
-
+var usersOutputFile = 'users.txt';
 var emails = fs.read('emails.txt').toString().split('\n');
+
+if (fs.exists(usersOutputFile)) {
+    fs.remove(usersOutputFile);
+}
 
 // Main part
 casper.start();
@@ -75,7 +79,7 @@ function handleSignupPage(ctr) {
     formdata['confirm_password'] = _pass;
 
     // Log it in the file of used nicknames
-    fs.write('users.txt', _nick + '\r\n', 'a');
+    fs.write(usersOutputFile, _nick + '\r\n', 'a');
     
     // Fill & submit
     this.fill('form#user-signup-create-account-form', formdata, true);

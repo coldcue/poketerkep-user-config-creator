@@ -6,6 +6,12 @@ var config = require('./config.json');
 // Variables
 var emailsOutputFile = 'emails.txt';
 
+fs.stat(emailsOutputFile, function(err, exist) {
+	if(exist) {
+		fs.unlink(emailsOutputFile);
+	}
+});
+
 // Generate email address
 for(var i = 0; i < config.count; i++) {
 	guerrilla.get_email().then(function(account) {

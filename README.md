@@ -4,3 +4,7 @@
 
 - `brew install casperjs`
 - `npm install`
+
+## Run:
+
+`npm start`

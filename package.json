@@ -20,5 +20,8 @@
     "aws-sdk": "^2.4.11",
     "node-guerrilla": "0.0.3",
     "util": "^0.10.3"
+  },
+  "scripts": {
+    "start": "node step1.js && casperjs step2.js && node step3.js"
   }
 }
