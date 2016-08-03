@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/coldcue/poketerkep-user-config-creator#readme",
   "dependencies": {
-    "aws-sdk": "^2.4.11"
+    "aws-sdk": "^2.4.11",
+    "node-guerrilla": "0.0.3",
+    "util": "^0.10.3"
   }
 }
