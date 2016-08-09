@@ -40,9 +40,13 @@ for(var i = 0; i < config.count; i++) {
 }
 
 casper.run();
+console.log('Users are registered!');
 
 // Pages
 function handleDobPage(ctr) {
+    this.reload(function() {
+        this.echo("loaded again");
+    });
     this.echo('[' + ctr + '] First Page: ' + this.getTitle());
     
     this.fill('form[name="verify-age"]', {
@@ -80,7 +84,7 @@ function handleSignupPage(ctr) {
     formdata['confirm_password'] = _pass;
 
     // Log it in the file of used nicknames
-    fs.write(usersOutputFile, _nick + '\r\n', 'a');
+    fs.write(usersOutputFile, _nick + '\n', 'a');
     
     // Fill & submit
     this.fill('form#user-signup-create-account-form', formdata, true);
@@ -88,7 +92,6 @@ function handleSignupPage(ctr) {
 
 function handleFinished(ctr) {
     this.echo('Finished ' + ctr + '.');
-    this.echo('Users are registered!');
 }
 
 // MD5 shit

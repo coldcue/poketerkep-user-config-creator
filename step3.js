@@ -31,7 +31,7 @@ function step3() {
         if(emailData[1]) {
             guerrilla.get_link('Pok&eacute;mon_Trainer_Club_Activation', 'Verify your email', emailData[1]).then(function(link) {
                 if(link) {
-                    fs.appendFile(linksOutputFile, link + '\r\n',  function(error) {
+                    fs.appendFile(linksOutputFile, link + '\n',  function(error) {
                             if(error) {
                                 return console.log(error);
                             } else {
@@ -48,11 +48,13 @@ function step3() {
 
     console.log('Uploading users...');
     for (var i = 0; i < users.length; i++) {
-        userConfigs.push({
-            userName: users[i],
-            lastUsed: 0,
-            banned: false
-        });
+        if(users[i]) {
+            userConfigs.push({
+                userName: users[i].trim(),
+                lastUsed: 0,
+                banned: false
+            });
+        }
     }
 
     uploadUsers(userConfigs);

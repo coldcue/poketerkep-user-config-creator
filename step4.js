@@ -34,9 +34,9 @@ for(var i = 0; i < links.length; i++) {
 }
 
 casper.run();
+console.log('Users are registered!');
+console.log('Work completed!');
 
 function handleFinished(ctr) {
     this.echo('Finished ' + ctr + '.');
-    this.echo('Users are registered!');
-    this.echo('Work completed!');
 }
