@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install": "pip install -r requirements.txt",
+    "start": "node step1.js && casperjs step2.js --fail-fast && node step3.js && casperjs step4.js --fail-fast && node step5.js && python tos.py accounts.txt && node step6.js"
   },
   "repository": {
     "type": "git",
@@ -18,10 +19,8 @@
   "homepage": "https://github.com/coldcue/poketerkep-user-config-creator#readme",
   "dependencies": {
     "aws-sdk": "^2.4.11",
+    "md5": "^2.1.0",
     "node-guerrilla": "0.0.3",
     "util": "^0.10.3"
-  },
-  "scripts": {
-    "start": "node step1.js && casperjs step2.js --fail-fast && node step3.js && casperjs step4.js --fail-fast"
   }
 }

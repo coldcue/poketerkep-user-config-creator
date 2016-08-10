@@ -7,6 +7,12 @@ var fs = require('fs');
 
 var links = fs.read('links.txt').toString().split('\n');
 
+var usersOutputFile = 'activated_users.txt';
+
+if (fs.exists(usersOutputFile)) {
+    fs.remove(usersOutputFile);
+}
+
 console.log('Activating links...');
 
 casper.start();
@@ -27,10 +33,14 @@ console.log('[o] Starting ' + 0 + ' to ' + (links.length - 1) + '.');
 
 for(var i = 0; i < links.length; i++) {
 	if(links[i]) {
+    var data = links[i].split(' ');
+    var link = data[0];
+    var user = data[1];
+
 		(function(ctr) {
-	        casper.thenOpen(links[i], handleFinished.bind(casper, ctr));
-	    })(i);
-	}   
+	        casper.thenOpen(link, handleFinished.bind(casper, ctr));
+	    })(user);
+	}
 }
 
 casper.run();
@@ -38,5 +48,7 @@ console.log('Users are registered!');
 console.log('Work completed!');
 
 function handleFinished(ctr) {
+    // Log it in the file of used nicknames
+    fs.write(usersOutputFile, ctr + '\n', 'a');
     this.echo('Finished ' + ctr + '.');
 }
