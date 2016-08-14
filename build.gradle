@@ -1,0 +1,39 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+jar {
+    baseName = 'poketerkep-user-config-generator'
+    version = '0.1'
+}
+
+//noinspection GroovyUnusedAssignment
+sourceCompatibility = 1.8
+//noinspection GroovyUnusedAssignment
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-firefox-driver', version: '2.53.1'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
+
+    compile files('libs/com.DeathByCaptcha.jar')
+    compile files('libs/org.base64.jar')
+    compile files('libs/org.json.jar')
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+idea {
+    project {
+        languageLevel = '1.8'
+    }
+    module {
+        downloadJavadoc = true // defaults to false
+        downloadSources = true
+    }
+}
