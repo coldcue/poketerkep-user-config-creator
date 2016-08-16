@@ -20,6 +20,7 @@ dependencies {
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
+    compile group: 'javax.mail', name: 'mail', version: '1.4.1'
 
     compile files('libs/com.DeathByCaptcha.jar')
     compile files('libs/org.base64.jar')

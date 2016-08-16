@@ -1,69 +1,92 @@
 package com.botcrator.stage;
 
-import com.DeathByCaptcha.Captcha;
 import com.botcrator.WebRegisterInstance;
-import com.botcrator.exception.CaptchaLoadFailException;
-import com.botcrator.support.CaptchaDecoder;
+import com.botcrator.exception.WrongCaptchaException;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Arrays;
+import org.openqa.selenium.interactions.Actions;
 
 public class SolveCaptchaStage extends StageImpl {
     private final WebDriver webDriver;
-    private final CaptchaDecoder captchaDecoder;
-    private Captcha captcha;
 
     public SolveCaptchaStage(WebRegisterInstance wri) {
         super(wri);
         webDriver = wri.getWebDriver();
-        captchaDecoder = wri.getCaptchaDecoder();
-        captcha = wri.getCaptcha();
     }
 
     @Override
     public void run() throws Exception {
-        logger.info("Solving captcha...");
+        logger.info("Solving captcha");
 
-        //Check if loaded
-        try {
-            webDriver.findElement(By.id("recaptcha_image"));
-        } catch (NoSuchElementException ignored) {
-            throw new CaptchaLoadFailException();
+        //Click on the checkbox
+        {
+            // Switch to recaptcha iframe
+            WebElement iframe = webDriver.findElement(By.cssSelector("iframe[title=\"recaptcha widget\"]"));
+            webDriver.switchTo().frame(iframe);
+
+            //Click on the checkbox
+            WebElement anchor = webDriver.findElement(By.id("recaptcha-anchor"));
+            new Actions(webDriver).moveToElement(anchor);
+            Thread.sleep(250);
+            anchor.click();
+
+            //Switch back to main frame
+            webDriver.switchTo().defaultContent();
         }
 
-        //Solve captcha
-        solveCaptcha();
-    }
+        Thread.sleep(3000);
 
-    private void solveCaptcha() throws InterruptedException, IOException {
-        //Save image
-        BufferedImage image = ImageIO.read(new URL(webDriver.findElement(By.id("recaptcha_image")).findElement(By.tagName("img")).getAttribute("src")));
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageIO.write(image, "PNG", outputStream);
-        InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
-        //Wait for captcha
-        captcha = captchaDecoder.decode(inputStream);
-        wri.setCaptcha(captcha);
+        logger.info("Waiting for the captcha to be solved...");
+        boolean captchaSolved = false;
+        for (int i = 0; i < 3 * 60; i++) {
+            JavascriptExecutor jse = (JavascriptExecutor) webDriver;
+            String response = (String) jse.executeScript("return document.getElementById('g-recaptcha-response').value;");
 
-        //Solve captcha
-        WebElement recaptcha_response_field = webDriver.findElement(By.id("recaptcha_response_field"));
+            if (response != null && response.length() > 0) {
+                captchaSolved = true;
+                break;
+            }
 
-        //Reset field
-        char[] backspaces = new char[30];
-        Arrays.fill(backspaces, (char) 8);
-        recaptcha_response_field.sendKeys(new String(backspaces));
+            Thread.sleep(1000);
+        }
 
-        recaptcha_response_field.sendKeys(captcha.text);
+        if (captchaSolved) {
+            logger.info("Captcha solved!");
+        } else {
+            throw new WrongCaptchaException();
+        }
+
+        WebElement submitButton = webDriver.findElement(By.cssSelector("input[type=\"submit\"]"));
+        new Actions(webDriver).moveToElement(submitButton);
+        Thread.sleep(250);
+        submitButton.click();
+
+        Thread.sleep(1000);
+
+        if (webDriver.findElement(By.id("signup-signin")) != null) {
+            System.out.println("Verification email sent!");
+        } else {
+            throw new Exception("Something bad happened");
+        }
+
+
+        //Send images
+//        try {
+//            // Switch to recaptcha iframe
+//            WebElement iframe = webDriver.findElement(By.cssSelector("iframe[title=\"recaptcha challenge\"]"));
+//            webDriver.switchTo().frame(iframe);
+//
+//            String description = webDriver.findElement(By.cssSelector("div.rc-imageselect-desc-no-canonical")).getText();
+//
+//            WebElement image = webDriver.findElement(By.cssSelector("div.rc-imageselect-challenge img"));
+//
+//            logger.info("Images arrived");
+//        } catch (Exception e) {
+//            logger.info("No captcha image found, continuing ...");
+//        }
+
     }
 }

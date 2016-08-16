@@ -111,7 +111,7 @@ public class TorRunnerInstance extends Thread {
         }
     }
 
-    public void newCicuit() {
+    public void newCircuit() {
         try {
             logger.info("Switching to a new circuit...");
             torControl.connect();
@@ -137,7 +137,7 @@ public class TorRunnerInstance extends Thread {
 
     public void incrementUseCount() {
         if (++useCount >= 2) {
-            newCicuit();
+            newCircuit();
         }
     }
 

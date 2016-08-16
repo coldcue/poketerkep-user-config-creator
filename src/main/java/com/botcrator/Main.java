@@ -1,7 +1,6 @@
 package com.botcrator;
 
 import com.botcrator.exception.ConnectionResetException;
-import com.botcrator.exception.TwitchBlockException;
 
 import java.io.File;
 import java.util.HashMap;
@@ -11,8 +10,6 @@ import java.util.logging.Logger;
 public class Main {
     public static File firefoxProfile = null;
     private static Logger logger = Logger.getGlobal();
-    private static final String fileName = "users.xml";
-    private static TorRunnerInstance[] torRunnerInstances;
     private static Map<TorRunnerInstance, WebRegisterInstance> webRegisterInstanceMap = new HashMap<>();
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
@@ -27,7 +24,7 @@ public class Main {
             firefoxProfile = new File(args[1]);
         }
 
-        torRunnerInstances = new TorRunnerInstance[instances];
+        TorRunnerInstance[] torRunnerInstances = new TorRunnerInstance[instances];
 
         //noinspection InfiniteLoopStatement
         while (true) {
@@ -68,10 +65,9 @@ public class Main {
                     entry.setValue(null);
 
                 } else if (!registerInstance.isAlive() &&
-                        (registerInstance.getLastException().getClass() == TwitchBlockException.class
-                                || registerInstance.getLastException().getClass() == ConnectionResetException.class)) {
+                        (registerInstance.getLastException().getClass() == ConnectionResetException.class)) {
                     //If twitch block
-                    torRunnerInstance.newCicuit();
+                    torRunnerInstance.newCircuit();
                     entry.setValue(null);
                 } else if (!registerInstance.isAlive()) {
                     registerInstance.interrupt();
