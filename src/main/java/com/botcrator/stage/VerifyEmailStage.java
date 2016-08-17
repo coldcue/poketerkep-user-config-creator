@@ -30,8 +30,10 @@ public class VerifyEmailStage extends StageImpl {
             mailChecker.connect();
 
             for (int i = 0; i < 60; i++) {
+                mailChecker.openInboxFolder();
                 Collection<Message> inbox = mailChecker.getInbox();
                 Optional<String> link = VerificationLinkExtractor.extractAndDeleteWithUsername(inbox, wri.getUsername());
+                mailChecker.closeInboxFolder();
 
                 if (link.isPresent()) {
                     webDriver.get(link.get());

@@ -12,7 +12,6 @@ public class Main {
     private static Logger logger = Logger.getGlobal();
     private static Map<TorRunnerInstance, WebRegisterInstance> webRegisterInstanceMap = new HashMap<>();
 
-    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     public static void main(String[] args) throws InterruptedException {
 
         int instances = 1;

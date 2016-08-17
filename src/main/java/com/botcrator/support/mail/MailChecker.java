@@ -1,10 +1,8 @@
 package com.botcrator.support.mail;
 
 import javax.mail.*;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Properties;
 
 public class MailChecker {
@@ -13,6 +11,7 @@ public class MailChecker {
     private final String user;
     private final String password;
     private Store store;
+    private Folder emailFolder;
 
     public MailChecker(String host, String user, String password) {
         this.host = host;
@@ -25,32 +24,39 @@ public class MailChecker {
         Properties properties = new Properties();
 
         properties.put("mail.pop3.host", host);
-        properties.put("mail.pop3.port", "115");
-        properties.put("mail.pop3.starttls.enable", "false");
+        properties.put("mail.pop3.port", "995");
+        properties.put("mail.pop3.starttls.enable", "true");
         Session emailSession = Session.getDefaultInstance(properties);
 
         //create the POP3 store object and connect with the pop server
-        store = emailSession.getStore("pop3");
+        store = emailSession.getStore("pop3s");
 
         store.connect(host, user, password);
     }
 
-    public Collection<Message> getInbox() throws MessagingException, IOException {
+    public void openInboxFolder() throws MessagingException {
         //create the folder object and open it
-        Folder emailFolder = store.getFolder("INBOX");
+        emailFolder = store.getFolder("INBOX");
         emailFolder.open(Folder.READ_ONLY);
+    }
 
+    public Collection<Message> getInbox() throws MessagingException, NullPointerException {
         // retrieve the messages from the folder in an array and print it
         Message[] messages = emailFolder.getMessages();
 
-        //close the store and folder objects
-        emailFolder.close(false);
-
-        return Collections.unmodifiableCollection(Arrays.asList(messages));
+        return Arrays.asList(messages);
     }
 
+    public void closeInboxFolder() throws MessagingException {
+        //close the store and folder objects
+        if (emailFolder != null) {
+            emailFolder.close(false);
+            emailFolder = null;
+        }
+    }
 
     public void close() throws MessagingException {
+        closeInboxFolder();
         store.close();
     }
 }
