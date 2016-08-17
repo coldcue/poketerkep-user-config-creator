@@ -14,24 +14,28 @@ public class VerificationLinkExtractor {
     public static Optional<String> extractAndDeleteWithUsername(Collection<Message> inbox, String username) throws IOException, MessagingException {
 
         for (Message message : inbox) {
-            Address[] recipients = message.getRecipients(Message.RecipientType.TO);
+            try {
+                Address[] recipients = message.getRecipients(Message.RecipientType.TO);
 
-            if (recipients.length != 1) {
-                continue;
-            }
-
-            if (recipients[0].toString().contains(username)) {
-                MimeMultipart content = (MimeMultipart) message.getContent();
-                String result = getTextFromMimeMultipart(content);
-
-                Matcher matcher = Pattern.compile("^.*href=\"https://club.pokemon.com/us/pokemon-trainer-club/activated/(?<activationToken>\\w+)\".*$", Pattern.MULTILINE + Pattern.DOTALL).matcher(result);
-
-                if (matcher.find()) {
-                    String token = matcher.group("activationToken");
-
-                    message.setFlag(Flags.Flag.DELETED, true);
-                    return Optional.of("https://club.pokemon.com/us/pokemon-trainer-club/activated/" + token);
+                if (recipients.length != 1) {
+                    continue;
                 }
+
+                if (recipients[0].toString().contains(username)) {
+                    MimeMultipart content = (MimeMultipart) message.getContent();
+                    String result = getTextFromMimeMultipart(content);
+
+                    Matcher matcher = Pattern.compile("^.*href=\"https://club.pokemon.com/us/pokemon-trainer-club/activated/(?<activationToken>\\w+)\".*$", Pattern.MULTILINE + Pattern.DOTALL).matcher(result);
+
+                    if (matcher.find()) {
+                        String token = matcher.group("activationToken");
+
+                        message.setFlag(Flags.Flag.DELETED, true);
+                        return Optional.of("https://club.pokemon.com/us/pokemon-trainer-club/activated/" + token);
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
 
         }

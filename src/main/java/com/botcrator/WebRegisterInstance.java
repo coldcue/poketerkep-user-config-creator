@@ -35,7 +35,6 @@ public class WebRegisterInstance extends Thread {
     private Stage currentStage;
     private Exception lastException;
 
-    private int emailFailCount = 0;
     private boolean success = false;
     private boolean webDriverInitialized = false;
 
@@ -102,19 +101,24 @@ public class WebRegisterInstance extends Thread {
                         currentStage.run();
                     }
 
-                    //Save user
+                    //Accept ToS
                     if (currentStage.getClass() == VerifyEmailStage.class) {
-                        currentStage = new SaveUserStage(this);
+                        currentStage = new AcceptTosStage(this);
                         currentStage.run();
                     }
 
+                    //Save user
+                    if (currentStage.getClass() == AcceptTosStage.class) {
+                        currentStage = new SaveUserStage(this);
+                        currentStage.run();
+
+                        success = true;
+                    }
+
+
                     if (success) break;
 
-                } catch (EmailHasNotArrivedException e) {
-                    logger.warning(e.getMessage());
-                    lastException = e;
-                    emailFailCount++;
-                } catch (CaptchaLoadFailException | UserNameTakenException | WrongCaptchaException e) {
+                } catch (EmailHasNotArrivedException | CaptchaLoadFailException | UserNameTakenException | WrongCaptchaException e) {
                     logger.warning(e.getMessage());
                     lastException = e;
                 }

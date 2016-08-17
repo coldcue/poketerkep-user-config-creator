@@ -9,9 +9,11 @@ import org.openqa.selenium.WebDriver;
 import javax.mail.Message;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 
 public class VerifyEmailStage extends StageImpl {
+    private final Logger log = Logger.getLogger(this.getClass().getName());
     private final WebDriver webDriver;
 
     public VerifyEmailStage(WebRegisterInstance wri) {
@@ -22,7 +24,7 @@ public class VerifyEmailStage extends StageImpl {
     @Override
     public void run() throws Exception {
 
-        System.out.println("Waiting for verification email...");
+        log.info("Waiting for verification email...");
 
         MailChecker mailChecker = null;
         try {
@@ -37,11 +39,11 @@ public class VerifyEmailStage extends StageImpl {
 
                 if (link.isPresent()) {
                     webDriver.get(link.get());
-                    System.out.println("Email verified successfully");
+                    log.info("Email verified successfully");
                     return;
                 }
 
-                Thread.sleep(1000);
+                Thread.sleep(3000);
             }
 
             throw new EmailHasNotArrivedException();
