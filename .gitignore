@@ -61,3 +61,4 @@ fabric.properties
 
 .idea/
 tor-0/
+/users.csv

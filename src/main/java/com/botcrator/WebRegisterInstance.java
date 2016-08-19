@@ -28,8 +28,9 @@ public class WebRegisterInstance extends Thread {
 
     private final CaptchaDecoder captchaDecoder = new CaptchaDecoder();
     private final int proxyPort;
+    private final TorRunnerInstance tor;
     private WebDriver webDriver;
-    private FirefoxProfile profile;
+    private FirefoxProfile profile = new FirefoxProfile();
     private Captcha captcha;
     private String username;
     private Stage currentStage;
@@ -38,8 +39,9 @@ public class WebRegisterInstance extends Thread {
     private boolean success = false;
     private boolean webDriverInitialized = false;
 
-    public WebRegisterInstance(int proxyPort) {
-        this.proxyPort = proxyPort;
+    public WebRegisterInstance(TorRunnerInstance tor) {
+        this.proxyPort = tor.getProxyPort();
+        this.tor = tor;
     }
 
     public void initWebDriver() {
@@ -48,11 +50,6 @@ public class WebRegisterInstance extends Thread {
         logger.info("Starting firefox...");
         Proxy proxy = new Proxy().setSocksProxy("localhost:" + proxyPort);
 
-        if (Main.firefoxProfile != null) {
-            profile = new FirefoxProfile(Main.firefoxProfile);
-        } else {
-            profile = new FirefoxProfile();
-        }
 
         // Disable images
         //profile.setPreference("permissions.default.image", 2);
@@ -196,5 +193,9 @@ public class WebRegisterInstance extends Thread {
     protected void finalize() throws Throwable {
         super.finalize();
         this.close();
+    }
+
+    public TorRunnerInstance getTor() {
+        return tor;
     }
 }

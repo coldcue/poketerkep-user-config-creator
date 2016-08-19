@@ -18,8 +18,24 @@ public class AcceptTosStage extends StageImpl {
     public void run() throws Exception {
         log.info("Accepting ToS...");
 
-        Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", wri.getProxyPort()));
-        ToSAccepter.acceptTos(wri.getUsername(), proxy);
+        for (int i = 0; i < 5; i++) {
+            boolean success = false;
+            try {
+                Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", wri.getProxyPort()));
+                ToSAccepter.acceptTos(wri.getUsername(), proxy);
+                success = true;
+            } catch (Exception e) {
+                log.warning("Cannot accept ToS, retrying...");
+            }
+
+            if (success) {
+                break;
+            }
+
+            wri.getTor().newCircuit();
+            Thread.sleep(5000);
+        }
+
 
         log.info("ToS Accepted Successfully!");
     }

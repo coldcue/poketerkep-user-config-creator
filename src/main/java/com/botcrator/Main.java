@@ -2,25 +2,25 @@ package com.botcrator;
 
 import com.botcrator.exception.ConnectionResetException;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
 public class Main {
-    public static File firefoxProfile = null;
+    public static String workerName;
     private static Logger logger = Logger.getGlobal();
     private static Map<TorRunnerInstance, WebRegisterInstance> webRegisterInstanceMap = new HashMap<>();
 
     public static void main(String[] args) throws InterruptedException {
 
         int instances = 1;
+
         if (args.length > 0) {
-            instances = Integer.parseInt(args[0]);
+            workerName = args[0];
         }
 
-        if (args.length > 1) {
-            firefoxProfile = new File(args[1]);
+        if (workerName == null) {
+            workerName = "default";
         }
 
         TorRunnerInstance[] torRunnerInstances = new TorRunnerInstance[instances];
@@ -55,7 +55,7 @@ public class Main {
 
                 if (registerInstance == null) {
                     //If not started, add a new instance
-                    entry.setValue(new WebRegisterInstance(torRunnerInstance.getProxyPort()));
+                    entry.setValue(new WebRegisterInstance(torRunnerInstance));
                     entry.getValue().start();
 
                 } else if (!registerInstance.isAlive() && registerInstance.isSuccess()) {
@@ -70,7 +70,7 @@ public class Main {
                     entry.setValue(null);
                 } else if (!registerInstance.isAlive()) {
                     registerInstance.interrupt();
-                    entry.setValue(new WebRegisterInstance(torRunnerInstance.getProxyPort()));
+                    entry.setValue(new WebRegisterInstance(torRunnerInstance));
                     entry.getValue().start();
                 }
             }

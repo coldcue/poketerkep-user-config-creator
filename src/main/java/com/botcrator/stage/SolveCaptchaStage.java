@@ -67,7 +67,7 @@ public class SolveCaptchaStage extends StageImpl {
         Thread.sleep(1000);
 
         if (webDriver.findElement(By.id("signup-signin")) != null) {
-            System.out.println("Verification email sent!");
+            logger.info("Verification email sent!");
         } else {
             throw new Exception("Something bad happened");
         }

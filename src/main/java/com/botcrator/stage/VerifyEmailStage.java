@@ -31,7 +31,7 @@ public class VerifyEmailStage extends StageImpl {
             mailChecker = new MailChecker("box.netado.hu", "mail@netado.hu", "czb7yMdNK3SHr5j");
             mailChecker.connect();
 
-            for (int i = 0; i < 60; i++) {
+            for (int i = 0; i < 30; i++) {
                 mailChecker.openInboxFolder();
                 Collection<Message> inbox = mailChecker.getInbox();
                 Optional<String> link = VerificationLinkExtractor.extractAndDeleteWithUsername(inbox, wri.getUsername());
@@ -43,7 +43,7 @@ public class VerifyEmailStage extends StageImpl {
                     return;
                 }
 
-                Thread.sleep(3000);
+                Thread.sleep(1000);
             }
 
             throw new EmailHasNotArrivedException();
