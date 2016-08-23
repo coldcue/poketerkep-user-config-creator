@@ -13,6 +13,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -54,7 +55,7 @@ public class WebRegisterInstance extends Thread {
         // Disable images
         //profile.setPreference("permissions.default.image", 2);
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-        //desiredCapabilities.setCapability(CapabilityType.PROXY, proxy);
+        desiredCapabilities.setCapability(CapabilityType.PROXY, proxy);
 
         webDriver = new FirefoxDriver(new FirefoxBinary(), profile, desiredCapabilities);
         webDriver.manage().deleteAllCookies();

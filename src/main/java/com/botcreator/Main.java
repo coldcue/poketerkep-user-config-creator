@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
 
-        int instances = 3;
+        int instances = 1;
 
         if (args.length > 0) {
             workerName = args[0];
