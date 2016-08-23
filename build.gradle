@@ -1,15 +1,39 @@
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
 
-jar {
-    baseName = 'poketerkep-user-config-generator'
-    version = '0.1'
-}
+
 
 //noinspection GroovyUnusedAssignment
 sourceCompatibility = 1.8
 //noinspection GroovyUnusedAssignment
 targetCompatibility = 1.8
+
+mainClassName = 'com.botcreator.Main'
+
+jar {
+    baseName = 'poketerkep-user-config-generator'
+    version = '0.1'
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+    }
+}
+
+shadowJar {
+    baseName = 'pt-user-generator'
+    classifier = null
+    version = null
+}
 
 repositories {
     mavenCentral()
