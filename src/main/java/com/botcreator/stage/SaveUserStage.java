@@ -6,6 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,7 +25,14 @@ public class SaveUserStage extends StageImpl {
     public void run() throws IOException {
         log.info("Saving user...");
 
-        FileWriter fileWriter = new FileWriter("users.csv", true);
+        File usersFile = new File("users.csv");
+
+        if (!usersFile.exists()) {
+            boolean newFile = usersFile.createNewFile();
+            if (!newFile) System.exit(0);
+        }
+
+        FileWriter fileWriter = new FileWriter(usersFile, true);
         PrintWriter out = new PrintWriter(fileWriter, true);
         CSVPrinter csvPrinter = new CSVPrinter(out, CSVFormat.DEFAULT);
 
