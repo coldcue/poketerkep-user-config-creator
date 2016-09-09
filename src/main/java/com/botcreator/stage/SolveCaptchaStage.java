@@ -52,6 +52,8 @@ public class SolveCaptchaStage extends StageImpl {
 
         if (captchaSolved) {
             webDriver.manage().window().setPosition(new Point(-2000, 0));
+            Dimension windowMinSize = new Dimension(100, 100);
+            webDriver.manage().window().setSize(windowMinSize);
             logger.info("Captcha solved!");
         } else {
             throw new WrongCaptchaException();

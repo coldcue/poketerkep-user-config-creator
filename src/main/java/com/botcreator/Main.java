@@ -19,6 +19,10 @@ public class Main {
             workerName = args[0];
         }
 
+        if (args.length > 1) {
+            instances = Integer.parseInt(args[1]);
+        }
+
         if (workerName == null) {
             workerName = "default";
         }
